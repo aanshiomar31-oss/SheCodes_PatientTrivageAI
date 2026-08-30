@@ -428,16 +428,6 @@ The same backend architecture supports:
 
 ---
 
-# Known Limitations
-
-- Authentication is not yet implemented.
-- SQLite is currently used for development.
-- PostgreSQL migration is planned.
-- MIMIC-IV-ED is required for model training.
-- Some advanced dashboard features currently rely on simulated operational data for demonstration purposes.
-
----
-
 # Future Roadmap
 
 - Multi-hospital coordination
@@ -455,12 +445,6 @@ The same backend architecture supports:
 - **MIT Laboratory for Computational Physiology** for the MIMIC-IV-ED dataset.
 - **PhysioNet** for providing open clinical research resources.
 - Emergency medicine triage frameworks that inspired the safety-first design philosophy.
-
----
-
-# License
-
-Internal Hackathon Project — License to be finalized.
 
 ---
 
