@@ -21,6 +21,9 @@ Access the complete project presentation and solution walkthrough below.
 > **Presentation (PDF):**  
 > https://drive.google.com/file/d/1Lz4M7OuBMKZoW6hPbm4r2QS1pMXHa-zm/view?usp=share_link
 
+> **Video Demo:**  
+> https://drive.google.com/file/d/1gKNCwf8ZhIxke9cIU2snmMovVi8NcfUB/view?usp=sharing
+
 ## Overview
 
 Emergency Departments often operate under severe time pressure, incomplete patient information, and unpredictable patient surges. Traditional triage relies heavily on clinician experience, making consistency difficult during high workload periods.
