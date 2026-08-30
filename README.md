@@ -14,6 +14,12 @@ PatientTriage.ai is an AI-assisted Clinical Decision Support System (CDSS) desig
 ![License](https://img.shields.io/badge/Status-Hackathon-green)
 
 ---
+##  Project Documentation
+
+Access the complete project presentation and solution walkthrough below.
+
+> **Presentation (PDF):**  
+> https://drive.google.com/file/d/1Lz4M7OuBMKZoW6hPbm4r2QS1pMXHa-zm/view?usp=share_link
 
 ## Overview
 
