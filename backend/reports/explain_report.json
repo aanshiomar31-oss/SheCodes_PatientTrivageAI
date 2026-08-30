@@ -1,0 +1,99 @@
+{
+  "version": "stacking-ensemble-20260829-1302",
+  "n_evaluated": 205,
+  "shap": {
+    "generated": true,
+    "top_features": [
+      [
+        "o2sat",
+        0.5597027140769351
+      ],
+      [
+        "pain",
+        0.5264618148188519
+      ],
+      [
+        "shock_index",
+        0.41916889193682383
+      ],
+      [
+        "pulse_pressure",
+        0.3996604006461931
+      ],
+      [
+        "arrival_hour",
+        0.3745693708853665
+      ],
+      [
+        "heartrate",
+        0.3455929033414816
+      ],
+      [
+        "mean_arterial_pressure",
+        0.32477758377652605
+      ],
+      [
+        "arrival_transport_AMBULANCE",
+        0.27314805695914424
+      ],
+      [
+        "vitals_missing_count",
+        0.21986626799217568
+      ],
+      [
+        "dbp",
+        0.21232769028190215
+      ]
+    ]
+  },
+  "evaluation": {
+    "calibration_error_per_class": {
+      "P1": 0.3271,
+      "P2": 0.1839,
+      "P3": 0.0763
+    },
+    "mean_calibration_error": 0.1958,
+    "fold_performance": [
+      {
+        "fold": 1,
+        "accuracy": 0.3902,
+        "macro_f1": 0.4666
+      },
+      {
+        "fold": 2,
+        "accuracy": 0.7317,
+        "macro_f1": 0.7658
+      },
+      {
+        "fold": 3,
+        "accuracy": 0.5366,
+        "macro_f1": 0.4598
+      },
+      {
+        "fold": 4,
+        "accuracy": 0.5366,
+        "macro_f1": 0.5241
+      },
+      {
+        "fold": 5,
+        "accuracy": 0.5366,
+        "macro_f1": 0.3709
+      }
+    ]
+  },
+  "artifacts_saved": [
+    "shap_summary.png",
+    "feature_importance.png",
+    "feature_importance.json",
+    "confusion_matrix.png",
+    "roc_curve.png",
+    "precision_recall_curve.png",
+    "calibration_curve.png",
+    "class_distribution.png",
+    "fold_performance.png",
+    "confidence_gauge.png",
+    "shap_waterfall_p1.png",
+    "shap_waterfall_p2.png",
+    "shap_waterfall_p3.png"
+  ]
+}

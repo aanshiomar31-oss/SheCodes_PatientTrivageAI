@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PatientTriage.ai — Data Quality Report</title>
+
+    <style>
+        body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+               background: #f8fafc; color: #0f172a; margin: 0; padding: 2rem; }
+        .container { max-width: 960px; margin: 0 auto; }
+        h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+        .subtitle { color: #64748b; margin-top: 0; margin-bottom: 2rem; }
+        .banner { background: #eff6ff; color: #1e40af; padding: 0.75rem 1rem;
+                   border-radius: 8px; font-weight: 600; margin-bottom: 2rem; }
+        section { background: white; border: 1px solid #e2e8f0; border-radius: 12px;
+                  padding: 1.5rem; margin-bottom: 1.5rem; }
+        h2 { font-size: 1.1rem; margin-top: 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid #f1f5f9; }
+        th { color: #64748b; font-weight: 600; }
+        code { background: #f1f5f9; padding: 0.1rem 0.35rem; border-radius: 4px; }
+        .bar-chart { display: flex; flex-direction: column; gap: 4px; }
+        .bar-chart.hourly { font-size: 0.75rem; }
+        .bar-row { display: flex; align-items: center; gap: 8px; }
+        .bar-label { width: 80px; flex-shrink: 0; color: #475569; font-size: 0.8rem; }
+        .bar { background: #2563eb; height: 14px; border-radius: 3px; min-width: 2px; }
+        .bar-count { color: #64748b; font-size: 0.8rem; }
+        .warning { color: #b45309; font-size: 0.85rem; }
+        footer { color: #94a3b8; font-size: 0.75rem; text-align: center; margin-top: 2rem; }
+    </style>
+    
+</head>
+<body>
+<div class="container">
+    <h1>PatientTriage.ai — Data Quality Report</h1>
+    <p class="subtitle">Generated 2026-08-29 09:00 UTC · 222 rows · 28 columns</p>
+    <div class="banner">The AI recommends. The nurse decides. This report describes the
+        merged edstays + triage dataset prior to model training.</div>
+
+    <section>
+        <h2>Missing Value Summary</h2>
+        <table><thead><tr><th>Column</th><th>Type</th><th>Missing Count</th><th>Missing %</th></tr></thead><tbody><tr><td>hadm_id</td><td>Int64</td><td>50</td><td>22.52%</td></tr>
+<tr><td>pain</td><td>float64</td><td>33</td><td>14.86%</td></tr>
+<tr><td>temperature</td><td>float64</td><td>26</td><td>11.71%</td></tr>
+<tr><td>heartrate</td><td>float64</td><td>24</td><td>10.81%</td></tr>
+<tr><td>shock_index</td><td>float64</td><td>24</td><td>10.81%</td></tr>
+<tr><td>o2sat</td><td>float64</td><td>24</td><td>10.81%</td></tr>
+<tr><td>resprate</td><td>float64</td><td>23</td><td>10.36%</td></tr>
+<tr><td>dbp</td><td>float64</td><td>23</td><td>10.36%</td></tr>
+<tr><td>sbp</td><td>float64</td><td>23</td><td>10.36%</td></tr>
+<tr><td>mean_arterial_pressure</td><td>float64</td><td>23</td><td>10.36%</td></tr>
+<tr><td>pulse_pressure</td><td>float64</td><td>23</td><td>10.36%</td></tr>
+<tr><td>acuity</td><td>float64</td><td>15</td><td>6.76%</td></tr>
+<tr><td>gender</td><td>str</td><td>0</td><td>0.0%</td></tr>
+<tr><td>race</td><td>str</td><td>0</td><td>0.0%</td></tr>
+<tr><td>arrival_transport</td><td>str</td><td>0</td><td>0.0%</td></tr>
+<tr><td>disposition</td><td>str</td><td>0</td><td>0.0%</td></tr>
+<tr><td>intime</td><td>str</td><td>0</td><td>0.0%</td></tr>
+<tr><td>stay_id</td><td>Int64</td><td>0</td><td>0.0%</td></tr>
+<tr><td>outtime</td><td>str</td><td>0</td><td>0.0%</td></tr>
+<tr><td>chiefcomplaint</td><td>str</td><td>0</td><td>0.0%</td></tr>
+<tr><td>age_group</td><td>str</td><td>0</td><td>0.0%</td></tr>
+<tr><td>subject_id</td><td>Int64</td><td>0</td><td>0.0%</td></tr>
+<tr><td>abnormal_vitals_count</td><td>int64</td><td>0</td><td>0.0%</td></tr>
+<tr><td>vitals_missing_count</td><td>int64</td><td>0</td><td>0.0%</td></tr>
+<tr><td>missing_history_flag</td><td>int64</td><td>0</td><td>0.0%</td></tr>
+<tr><td>arrival_hour</td><td>int32</td><td>0</td><td>0.0%</td></tr>
+<tr><td>night_shift_flag</td><td>Int64</td><td>0</td><td>0.0%</td></tr>
+<tr><td>weekend_flag</td><td>Int64</td><td>0</td><td>0.0%</td></tr></tbody></table>
+    </section>
+
+    <section>
+        <h2>Duplicate Check</h2>
+        <ul><li>Fully duplicated rows: <strong>0</strong></li>
+<li>Duplicate <code>stay_id</code> values: <strong>0</strong></li>
+<li>Duplicate <code>subject_id</code> values (expected — patients can have multiple ED stays): <strong>158</strong></li></ul>
+    </section>
+
+    <section>
+        <h2>Age Distribution</h2>
+        <p><em>Column 'anchor_age' not available — age distribution skipped.</em></p>
+    </section>
+
+    <section>
+        <h2>Acuity Distribution</h2>
+        <div class="bar-chart"><div class="bar-row"><span class="bar-label">Acuity 1</span><span class="bar" style="width:59px;"></span><span class="bar-count">18</span></div>
+<div class="bar-row"><span class="bar-label">Acuity 2</span><span class="bar" style="width:320px;"></span><span class="bar-count">97</span></div>
+<div class="bar-row"><span class="bar-label">Acuity 3</span><span class="bar" style="width:296px;"></span><span class="bar-count">90</span></div>
+<div class="bar-row"><span class="bar-label">Acuity 4</span><span class="bar" style="width:6px;"></span><span class="bar-count">2</span></div></div><p class="warning">15 stays have no acuity recorded (zero-history / untriaged — preserved in the dataset, excluded from this chart).</p>
+    </section>
+
+    <section>
+        <h2>Arrival Hour Histogram</h2>
+        <div class="bar-chart hourly"><div class="bar-row"><span class="bar-label">00:00</span><span class="bar" style="width:32px;"></span><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">01:00</span><span class="bar" style="width:48px;"></span><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">02:00</span><span class="bar" style="width:48px;"></span><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">03:00</span><span class="bar" style="width:32px;"></span><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">04:00</span><span class="bar" style="width:64px;"></span><span class="bar-count">4</span></div>
+<div class="bar-row"><span class="bar-label">05:00</span><span class="bar" style="width:80px;"></span><span class="bar-count">5</span></div>
+<div class="bar-row"><span class="bar-label">06:00</span><span class="bar" style="width:80px;"></span><span class="bar-count">5</span></div>
+<div class="bar-row"><span class="bar-label">07:00</span><span class="bar" style="width:32px;"></span><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">08:00</span><span class="bar" style="width:80px;"></span><span class="bar-count">5</span></div>
+<div class="bar-row"><span class="bar-label">09:00</span><span class="bar" style="width:112px;"></span><span class="bar-count">7</span></div>
+<div class="bar-row"><span class="bar-label">10:00</span><span class="bar" style="width:96px;"></span><span class="bar-count">6</span></div>
+<div class="bar-row"><span class="bar-label">11:00</span><span class="bar" style="width:240px;"></span><span class="bar-count">15</span></div>
+<div class="bar-row"><span class="bar-label">12:00</span><span class="bar" style="width:240px;"></span><span class="bar-count">15</span></div>
+<div class="bar-row"><span class="bar-label">13:00</span><span class="bar" style="width:160px;"></span><span class="bar-count">10</span></div>
+<div class="bar-row"><span class="bar-label">14:00</span><span class="bar" style="width:240px;"></span><span class="bar-count">15</span></div>
+<div class="bar-row"><span class="bar-label">15:00</span><span class="bar" style="width:208px;"></span><span class="bar-count">13</span></div>
+<div class="bar-row"><span class="bar-label">16:00</span><span class="bar" style="width:288px;"></span><span class="bar-count">18</span></div>
+<div class="bar-row"><span class="bar-label">17:00</span><span class="bar" style="width:224px;"></span><span class="bar-count">14</span></div>
+<div class="bar-row"><span class="bar-label">18:00</span><span class="bar" style="width:320px;"></span><span class="bar-count">20</span></div>
+<div class="bar-row"><span class="bar-label">19:00</span><span class="bar" style="width:224px;"></span><span class="bar-count">14</span></div>
+<div class="bar-row"><span class="bar-label">20:00</span><span class="bar" style="width:240px;"></span><span class="bar-count">15</span></div>
+<div class="bar-row"><span class="bar-label">21:00</span><span class="bar" style="width:240px;"></span><span class="bar-count">15</span></div>
+<div class="bar-row"><span class="bar-label">22:00</span><span class="bar" style="width:128px;"></span><span class="bar-count">8</span></div>
+<div class="bar-row"><span class="bar-label">23:00</span><span class="bar" style="width:96px;"></span><span class="bar-count">6</span></div></div>
+    </section>
+
+    <footer>PatientTriage.ai — Milestone 2 data pipeline · backend/ml/preprocess.py</footer>
+</div>
+</body>
+</html>

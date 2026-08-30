@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-surface-bg text-surface-ink antialiased;
+  background-image: radial-gradient(ellipse at 50% -15%, #ffffff 0%, #f4f6f8 55%);
+  background-attachment: fixed;
+}
+
+@layer components {
+  .panel {
+    @apply rounded-panel border border-surface-border bg-surface-panel shadow-card;
+  }
+
+  .panel-hover {
+    @apply transition hover:shadow-lift;
+  }
+
+  .label {
+    @apply text-[11px] font-medium uppercase tracking-wide text-surface-muted;
+  }
+
+  .stat {
+    @apply text-4xl font-light tracking-tight text-surface-ink;
+  }
+
+  .pill {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-medium;
+  }
+
+  .btn-primary {
+    @apply rounded-2xl bg-accent-blue px-5 py-3 text-sm font-medium text-white
+           shadow-card transition hover:brightness-95
+           focus:outline-none focus:ring-2 focus:ring-accent-blue/50
+           disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-ghost {
+    @apply rounded-2xl border border-surface-border bg-white px-4 py-2.5 text-sm
+           font-medium text-slate-600 transition hover:bg-slate-50
+           focus:outline-none focus:ring-2 focus:ring-accent-mint/30;
+  }
+
+  .input {
+    @apply mt-1 block w-full rounded-xl border border-surface-border bg-[#FAFBFC]
+           px-3 py-2.5 text-sm text-surface-ink placeholder-surface-muted
+           transition focus:border-accent-mint focus:bg-white focus:outline-none
+           focus:ring-2 focus:ring-accent-mint/20;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

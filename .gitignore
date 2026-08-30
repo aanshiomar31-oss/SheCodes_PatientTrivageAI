@@ -1,0 +1,66 @@
+# ==============================================================================
+# PatientTriage.ai — Root .gitignore
+# ==============================================================================
+
+# --- Python ------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+.Python
+build/
+dist/
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# --- Node / Frontend -----------------------------------------------------------
+node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Environment secrets --------------------------------------------------------
+.env
+.env.local
+.env.*.local
+backend/.env
+
+# --- Databases -------------------------------------------------------------------
+*.db
+*.sqlite
+*.sqlite3
+backend/data/*.db
+
+# --- Clinical data (never commit patient data) ------------------------------------
+backend/data/*.csv
+backend/data/*.csv.gz
+!backend/data/.gitkeep
+
+# --- ML artifacts / experiment tracking --------------------------------------------
+backend/reports/mlruns/
+backend/reports/*.pkl
+backend/reports/*.joblib
+!backend/reports/.gitkeep
+.optuna/
+
+# --- Testing / coverage --------------------------------------------------------------
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# --- Editors / OS ------------------------------------------------------------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Logs --------------------------------------------------------------------------
+*.log

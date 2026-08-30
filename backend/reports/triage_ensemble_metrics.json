@@ -1,0 +1,41 @@
+{
+  "version": "stacking-ensemble-20260829-1938",
+  "trained_at": "2026-08-29T19:38:16.198832+00:00",
+  "n_labeled": 205,
+  "classes_trained": [
+    1,
+    2,
+    3
+  ],
+  "classes_excluded_sparse": "see logs \u2014 fewer than 10 examples",
+  "evaluation_method": "5-fold stratified out-of-fold CV, NOT held-out test (n=205 is too small to trust a single split)",
+  "oof_metrics": {
+    "accuracy": 0.4976,
+    "macro_f1": 0.5166,
+    "weighted_f1": 0.4897,
+    "macro_recall": 0.5756,
+    "macro_precision": 0.4885,
+    "log_loss": 0.9072,
+    "per_class_recall": {
+      "1": 0.7778,
+      "2": 0.3711,
+      "3": 0.5778
+    },
+    "confusion_matrix": {
+      "true_1_pred_1": 14,
+      "true_1_pred_2": 4,
+      "true_1_pred_3": 0,
+      "true_2_pred_1": 14,
+      "true_2_pred_2": 36,
+      "true_2_pred_3": 47,
+      "true_3_pred_1": 2,
+      "true_3_pred_2": 36,
+      "true_3_pred_3": 52
+    }
+  },
+  "known_limitations": [
+    "age is absent from this MIMIC-IV-ED demo extract (no anchor_age in edstays.csv.gz) \u2014 every stay is scored with age=None, so age-banded rule logic falls back to the adult band for every training row. Age-specific ML patterns cannot currently be learned from this data.",
+    "P4 (n=2) and P5 (n=0) are excluded from ML training as statistically unsupportable. P4/P5 assignment for low-risk patients is a documented rule-based floor in ml/predict.py, not a learned boundary.",
+    "n=205 labeled stays is small for a clinical ensemble; OOF metrics carry real uncertainty."
+  ]
+}

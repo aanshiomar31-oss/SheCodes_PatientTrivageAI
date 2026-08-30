@@ -1,0 +1,1 @@
+This directory holds the raw MIMIC-IV-ED demo CSVs (edstays.csv.gz, triage.csv.gz, vitalsign.csv.gz, diagnosis.csv.gz, medrecon.csv.gz, pyxis.csv.gz) plus the SQLite database file and processed_triage.csv. These are gitignored — see .gitignore — and are not committed to source control.

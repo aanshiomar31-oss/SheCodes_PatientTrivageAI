@@ -1,0 +1,206 @@
+{
+  "version": "random_forest-20260829-1247",
+  "trained_at": "2026-08-29T12:47:07.769947+00:00",
+  "n_labeled": 207,
+  "n_features": 20,
+  "prevalence_high_acuity": 0.5556,
+  "excluded_features": {
+    "temporal_leakage": "disposition_* \u2014 recorded after the stay ends, not known at triage time",
+    "protected_attributes": "race_*, gender_* \u2014 excluded from model inputs on clinical-ethics grounds; retained for the fairness_check below",
+    "degenerate": "age_group_Unknown \u2014 constant across all rows in this data extract"
+  },
+  "evaluation_method": "5-fold x 5-repeat stratified cross-validation, out-of-fold predictions. Metrics below are cross-validated, NOT held-out-test \u2014 the labeled cohort (207 rows) is too small for a trustworthy single split.",
+  "cost_model": {
+    "under_triage_cost": 15.0,
+    "over_triage_cost": 1.0,
+    "ratio": 15.0
+  },
+  "selected_model": "random_forest",
+  "selected_model_metrics": {
+    "roc_auc": 0.7108,
+    "average_precision": 0.7769,
+    "brier_score": 0.2135,
+    "chosen_threshold": 0.47,
+    "recall_high_acuity": 0.7217,
+    "precision_high_acuity": 0.6803,
+    "true_positives": 83,
+    "false_positives": 39,
+    "false_negatives": 32,
+    "true_negatives": 53,
+    "chosen_cost": 519.0,
+    "base_rate": 0.556,
+    "alert_ceiling": 0.65,
+    "alert_rate_at_threshold": 0.589,
+    "alert_rate_constraint": "slack"
+  },
+  "model_comparison": {
+    "baseline_majority_class": {
+      "roc_auc": 0.5,
+      "average_precision": 0.5556,
+      "brier_score": 0.4444,
+      "chosen_threshold": 0.5,
+      "recall_high_acuity": 1.0,
+      "precision_high_acuity": 0.5556,
+      "true_positives": 115,
+      "false_positives": 92,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "chosen_cost": Infinity,
+      "base_rate": 0.556,
+      "alert_ceiling": 0.65,
+      "alert_rate_at_threshold": 0.0,
+      "alert_rate_constraint": "infeasible"
+    },
+    "baseline_logistic_regression": {
+      "roc_auc": 0.6849,
+      "average_precision": 0.754,
+      "brier_score": 0.2241,
+      "chosen_threshold": 0.39,
+      "recall_high_acuity": 0.7304,
+      "precision_high_acuity": 0.6269,
+      "true_positives": 84,
+      "false_positives": 50,
+      "false_negatives": 31,
+      "true_negatives": 42,
+      "chosen_cost": 515.0,
+      "base_rate": 0.556,
+      "alert_ceiling": 0.65,
+      "alert_rate_at_threshold": 0.647,
+      "alert_rate_constraint": "binding"
+    },
+    "random_forest": {
+      "roc_auc": 0.7108,
+      "average_precision": 0.7769,
+      "brier_score": 0.2135,
+      "chosen_threshold": 0.47,
+      "recall_high_acuity": 0.7217,
+      "precision_high_acuity": 0.6803,
+      "true_positives": 83,
+      "false_positives": 39,
+      "false_negatives": 32,
+      "true_negatives": 53,
+      "chosen_cost": 519.0,
+      "base_rate": 0.556,
+      "alert_ceiling": 0.65,
+      "alert_rate_at_threshold": 0.589,
+      "alert_rate_constraint": "slack"
+    },
+    "hist_gradient_boosting": {
+      "roc_auc": 0.7002,
+      "average_precision": 0.7641,
+      "brier_score": 0.2296,
+      "chosen_threshold": 0.45,
+      "recall_high_acuity": 0.7304,
+      "precision_high_acuity": 0.6364,
+      "true_positives": 84,
+      "false_positives": 48,
+      "false_negatives": 31,
+      "true_negatives": 44,
+      "chosen_cost": 513.0,
+      "base_rate": 0.556,
+      "alert_ceiling": 0.65,
+      "alert_rate_at_threshold": 0.638,
+      "alert_rate_constraint": "binding"
+    },
+    "xgboost": {
+      "roc_auc": 0.6929,
+      "average_precision": 0.7678,
+      "brier_score": 0.2377,
+      "chosen_threshold": 0.41,
+      "recall_high_acuity": 0.713,
+      "precision_high_acuity": 0.6308,
+      "true_positives": 82,
+      "false_positives": 48,
+      "false_negatives": 33,
+      "true_negatives": 44,
+      "chosen_cost": 543.0,
+      "base_rate": 0.556,
+      "alert_ceiling": 0.65,
+      "alert_rate_at_threshold": 0.628,
+      "alert_rate_constraint": "binding"
+    },
+    "lightgbm": {
+      "roc_auc": 0.6698,
+      "average_precision": 0.7461,
+      "brier_score": 0.2493,
+      "chosen_threshold": 0.43,
+      "recall_high_acuity": 0.7217,
+      "precision_high_acuity": 0.6194,
+      "true_positives": 83,
+      "false_positives": 51,
+      "false_negatives": 32,
+      "true_negatives": 41,
+      "chosen_cost": 531.0,
+      "base_rate": 0.556,
+      "alert_ceiling": 0.65,
+      "alert_rate_at_threshold": 0.647,
+      "alert_rate_constraint": "binding"
+    },
+    "catboost": {
+      "roc_auc": 0.7034,
+      "average_precision": 0.7662,
+      "brier_score": 0.2229,
+      "chosen_threshold": 0.47,
+      "recall_high_acuity": 0.7217,
+      "precision_high_acuity": 0.6434,
+      "true_positives": 83,
+      "false_positives": 46,
+      "false_negatives": 32,
+      "true_negatives": 46,
+      "chosen_cost": 526.0,
+      "base_rate": 0.556,
+      "alert_ceiling": 0.65,
+      "alert_rate_at_threshold": 0.623,
+      "alert_rate_constraint": "binding"
+    }
+  },
+  "fairness_check": {
+    "gender_F": {
+      "n": 114,
+      "flagged_rate": 0.614,
+      "high_acuity_prevalence": 0.518,
+      "recall_high_acuity": 0.78
+    },
+    "gender_M": {
+      "n": 93,
+      "flagged_rate": 0.559,
+      "high_acuity_prevalence": 0.602,
+      "recall_high_acuity": 0.661
+    },
+    "race_BLACK/AFRICAN AMERICAN": {
+      "n": 43,
+      "flagged_rate": 0.512,
+      "high_acuity_prevalence": 0.465,
+      "recall_high_acuity": 0.7
+    },
+    "race_HISPANIC/LATINO - CUBAN": {
+      "n": 11,
+      "flagged_rate": 0.636,
+      "high_acuity_prevalence": 0.545,
+      "recall_high_acuity": 0.833
+    },
+    "race_PORTUGUESE": {
+      "n": 9,
+      "flagged_rate": 0.222,
+      "high_acuity_prevalence": 0.444,
+      "recall_high_acuity": 0.5
+    },
+    "race_UNKNOWN": {
+      "n": 5,
+      "flagged_rate": 1.0,
+      "high_acuity_prevalence": 0.8,
+      "recall_high_acuity": 1.0
+    },
+    "race_WHITE": {
+      "n": 132,
+      "flagged_rate": 0.629,
+      "high_acuity_prevalence": 0.576,
+      "recall_high_acuity": 0.724
+    }
+  },
+  "known_limitations": [
+    "age_group is 'Unknown' for 100% of stays \u2014 the source edstays.csv.gz has no anchor_age column in this demo extract, so the model cannot currently learn age-specific patterns even though the platform's clinical design requires them.",
+    "n=207 labeled stays is small for a clinical model; cross-validated metrics have wide uncertainty and should not be read as production-grade performance.",
+    "Acuity level 4 has only 2 examples and level 5 has none in this extract; the binary framing above sidesteps this but a future 5-level model would need far more data before it is trustworthy."
+  ]
+}
