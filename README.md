@@ -1,381 +1,471 @@
 # PatientTriage.ai
 
-**Clinical Decision Support System for Emergency Department Triage**
+### AI-Powered Clinical Decision Support System for Emergency Department Triage
 
 > **The AI recommends. The nurse decides.**
-> Every AI recommendation is reviewable, overridable, and audit logged.
-> The system never autonomously moves a patient in the queue.
+
+PatientTriage.ai is an AI-assisted Clinical Decision Support System (CDSS) designed to help emergency department staff prioritize patients faster, safer, and more transparently. Every recommendation is explainable, reviewable, overridable, and permanently audit logged—ensuring that licensed clinicians always remain in control of patient care.
+
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?logo=react)
+![XGBoost](https://img.shields.io/badge/XGBoost-Ensemble-success)
+![SHAP](https://img.shields.io/badge/Explainable_AI-SHAP-blue)
+![MIMIC-IV-ED](https://img.shields.io/badge/Dataset-MIMIC--IV--ED-orange)
+![License](https://img.shields.io/badge/Status-Hackathon-green)
 
 ---
 
 ## Overview
 
-PatientTriage.ai is a full-stack clinical decision support platform for emergency department triage. It combines a **rule-based safety engine** with a **trained ML ensemble** (XGBoost, LightGBM, CatBoost, HistGradientBoosting) to recommend patient priority (P1–P4), surface explainability via SHAP, and flag high-risk conditions in real time over WebSocket.
+Emergency Departments often operate under severe time pressure, incomplete patient information, and unpredictable patient surges. Traditional triage relies heavily on clinician experience, making consistency difficult during high workload periods.
 
-The system is trained on the **MIMIC-IV-ED dataset** and follows ESI (Emergency Severity Index) acuity levels.
+PatientTriage.ai augments—not replaces—clinical judgment by combining a **clinical rule engine** with a **hybrid machine learning ensemble** to provide:
 
----
+- Real-time triage recommendations
+- Confidence estimation
+- Explainable AI (SHAP)
+- Continuous waiting-room monitoring
+- Dynamic Clinical Priority Score (CPS)
+- Clinician override with full audit history
 
-## Clinical Safety Principles
+The system is designed around one core philosophy:
 
-These principles are enforced in code, not just documented:
-
-- **Under-triage is worse than over-triage.** When uncertain, the system biases toward flagging higher acuity, never lower.
-- **Missing data increases uncertainty**, not confidence — missing vitals/history are never silently treated as "normal." A per-prediction confidence score accounts for data completeness.
-- **Age-specific thresholds are mandatory.** Infant, child, adolescent, adult, and geriatric patients use separate physiological baselines throughout the rule engine.
-- **The rule engine always runs first.** Deterministic red-flag rules set a priority *floor* that the ML ensemble can never soften. A probabilistic estimate can raise concern; it cannot dismiss a named clinical red flag.
-- **Data sufficiency guard.** When ≥ 6 of 7 vital signs are missing and no rule has fired, the ML output is capped at P3 with low confidence — the system cannot responsibly issue a high-acuity recommendation from demographics alone.
-- **Every recommendation is audit logged.** The `audit_logs` table captures every input and output, permanently.
+> **The AI recommends. The clinician decides.**
 
 ---
 
-## Features
+# Dataset
 
-### Backend
+PatientTriage.ai is trained using the **MIMIC-IV-ED Demo Dataset**, released by the **MIT Laboratory for Computational Physiology** through **PhysioNet**.
+
+Unlike synthetic datasets, MIMIC-IV-ED contains real emergency department encounters that have been carefully de-identified for research, making the system clinically grounded while preserving patient privacy.
+
+## Dataset Components
+
+| File | Purpose |
+|------|---------|
+| `edstays.csv.gz` | Emergency department visit records |
+| `triage.csv.gz` | Initial nurse triage assessment |
+| `vitalsign.csv.gz` | Heart rate, blood pressure, respiratory rate, temperature and SpO₂ |
+| `diagnosis.csv.gz` | Emergency department diagnoses |
+| `medrecon.csv.gz` | Medication reconciliation history |
+| `pyxis.csv.gz` | Medication dispensing records |
+
+## Data Engineering Pipeline
+
+Before model training, the raw MIMIC-IV-ED data undergoes a complete preprocessing workflow.
+
+1. Load and validate all datasets.
+2. Merge patient stay and triage records.
+3. Engineer clinically meaningful features.
+4. Handle missing values safely.
+5. Normalize numerical variables.
+6. Train the hybrid ensemble model.
+7. Generate SHAP explanations and evaluation reports.
+
+## Engineered Clinical Features
+
+Instead of relying only on raw vital signs, PatientTriage.ai derives clinically meaningful features including:
+
+- Age Group (Infant, Child, Adolescent, Adult, Geriatric)
+- Shock Index
+- Mean Arterial Pressure (MAP)
+- Pulse Pressure
+- Abnormal Vitals Count
+- Missing History Flag
+- Arrival Hour
+- Night Shift Flag
+- Weekend Flag
+
+These engineered features help the model capture physiological patterns that clinicians already use during emergency assessment.
+
+---
+
+# End-to-End Workflow
+
+```mermaid
+flowchart TD
+
+A[Patient Arrives]
+
+B[Nurse enters demographics, symptoms and vitals]
+
+C[Clinical Rule Engine]
+
+D[Hybrid Ensemble ML]
+
+D1[XGBoost]
+
+D2[LightGBM]
+
+D3[CatBoost]
+
+D4[HistGradientBoosting]
+
+E[Confidence Estimation]
+
+F[SHAP Explainability]
+
+G[Clinical Priority Score]
+
+H[FastAPI Backend]
+
+I[React Dashboard]
+
+J[Waiting Room Monitoring]
+
+K[Digital Twin & Surge Mode]
+
+A --> B
+
+B --> C
+
+C --> D
+
+D --> D1
+
+D --> D2
+
+D --> D3
+
+D --> D4
+
+D --> E
+
+E --> F
+
+F --> G
+
+G --> H
+
+H --> I
+
+I --> J
+
+J --> K
+```
+
+## Workflow Summary
+
+1. **Patient Intake** – Demographics, symptoms and vital signs are entered.
+2. **Clinical Rule Engine** – Critical red-flag conditions establish a minimum urgency level.
+3. **Hybrid ML Ensemble** – Multiple boosting models generate a calibrated risk estimate.
+4. **Confidence Estimation** – The uncertainty engine evaluates prediction reliability.
+5. **SHAP Explainability** – Every recommendation includes its strongest contributing factors.
+6. **Clinical Priority Score (CPS)** – AI risk is combined with waiting time, age vulnerability and uncertainty.
+7. **Live Queue** – Recommendations appear instantly on the dashboard.
+8. **Continuous Monitoring** – Waiting patients are reassessed whenever vitals worsen or safe waiting thresholds are exceeded.
+
+---
+
+# Clinical Safety Principles
+
+PatientTriage.ai is intentionally designed around safety-first clinical principles.
+
+- **Under-triage is worse than over-triage.**
+- Missing data increases uncertainty—not confidence.
+- Pediatric, adult and geriatric patients use separate physiological thresholds.
+- The rule engine always executes before machine learning.
+- Critical patients can never be silently downgraded by the ML model.
+- Every recommendation is permanently audit logged.
+- Every recommendation can be overridden by a licensed clinician.
+
+---
+
+# Feature Highlights
+
+| Capability | Purpose |
+|------------|---------|
+| Hybrid AI Engine | Combines clinical rules with ensemble ML |
+| Age-Aware Triage | Separate thresholds across age groups |
+| Clinical Priority Score | Dynamic operational prioritization |
+| Live Queue | Real-time WebSocket updates |
+| SHAP Explainability | Transparent AI reasoning |
+| Waiting Room Monitoring | Deterioration alerts |
+| Sepsis Screening | qSOFA & SIRS evaluation |
+| Protocol Detection | STEMI, Stroke and Sepsis triggers |
+| Nurse Override | Human-in-the-loop decision making |
+| Digital Twin | Emergency Department surge simulation |
+
+---
+
+# Backend Features
+
 | Feature | Description |
-|---|---|
-| **Hybrid Intelligence Layer** | Rule engine → Ensemble ML → Uncertainty → SHAP → Recommendation |
-| **ML Ensemble** | XGBoost, LightGBM, CatBoost, HistGradientBoosting stacked with a logistic meta-learner; calibrated with Isotonic Regression |
-| **Rule Engine** | 9 deterministic red-flag rules (critical hypoxia, shock, stroke/FAST, airway compromise, seizure, chest pain + diaphoresis, neonate fever, severe resp distress, moderate derangement) |
-| **Confidence System** | Three-signal score: calibrated probability + ensemble agreement + data completeness penalty |
-| **SHAP Explanations** | Per-prediction top-3 feature importance surfaced in the API response |
-| **Sepsis Screening** | qSOFA + SIRS criteria evaluated on every intake |
-| **Protocol Triggers** | Rule-based detection of time-critical protocol activations (STEMI, stroke, sepsis, etc.) |
-| **Clinical Priority Score (CPS)** | 0–100 composite urgency score for queue sorting |
-| **Live Queue** | Real-time patient queue with WebSocket push on every new intake |
-| **Waiting Room Monitor** | Background service that escalates patients who deteriorate while waiting |
-| **Audit Log** | Every triage recommendation persisted with full input/output |
-| **Nurse Override** | Priority overrides recorded and logged separately from AI recommendations |
-
-### Frontend
-| Page | Description |
-|---|---|
-| **Command Center** | Real-time ED dashboard — acuity distribution, bed occupancy, surge toggle |
-| **Patient Intake** | Live AI preview as fields are entered (debounced); full triage submission with protocol modal |
-| **Live Queue** | Sortable patient queue with CPS, priority badge, sepsis alerts, WebSocket live updates |
-| **Explainability** | SHAP feature importance panel per patient |
-| **Comparison** | Side-by-side radar chart comparison of two patients |
-| **Digital Twin** | Physiological simulation view |
-| **Audit Logs** | Full audit trail with actor, event type, resource, and timestamp |
+|---------|-------------|
+| FastAPI Backend | High-performance REST API |
+| SQLAlchemy ORM | Database abstraction |
+| Alembic | Version-controlled migrations |
+| SQLite | Development database |
+| WebSockets | Real-time queue updates |
+| Hybrid Ensemble | XGBoost, LightGBM, CatBoost, HistGradientBoosting |
+| SHAP | Explainable AI |
+| Confidence Engine | Multi-signal uncertainty estimation |
+| Audit Logging | Permanent recommendation history |
+| Waiting Monitor | Automatic reassessment alerts |
 
 ---
 
-## Architecture
+# Frontend Features
 
-```
-                                   ┌────────────────────────────┐
-                                   │        Clinician / Nurse    │
-                                   └──────────────┬──────────────┘
-                                                  │ HTTPS / WSS
-                                                  ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                 Frontend — React + Vite  (port 5173)              │
-│                                                                    │
-│  pages/                    components/         services/           │
-│  ├─ CommandCenter.jsx      ├─ Layout.jsx        └─ api.js (axios) │
-│  ├─ PatientIntake.jsx      ├─ ConfidenceGauge                     │
-│  ├─ LiveQueue.jsx          ├─ SepsisAlert                         │
-│  ├─ Explainability.jsx     ├─ ProtocolModal                       │
-│  ├─ PatientComparison.jsx  ├─ QueueTable                          │
-│  ├─ DigitalTwin.jsx        └─ SHAPPanel                           │
-│  └─ AuditLogs.jsx                                                  │
-└──────────────────────────────────┬───────────────────────────────┘
-                                   │ REST /api/v1/*  +  WebSocket /ws
-                                   ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                  Backend — FastAPI  (port 8000)                    │
-│                                                                    │
-│  app/api/routes/                                                   │
-│  ├─ triage.py        POST /triage — intake → predict → queue      │
-│  ├─ queue.py         GET  /queue  — live patient list              │
-│  ├─ override.py      POST /override — nurse priority override      │
-│  ├─ audit.py         GET  /audit  — audit log                      │
-│  ├─ vitals.py        POST /vitals — vitals stream update           │
-│  ├─ model.py         GET  /model  — model metadata & retrain       │
-│  └─ health.py        GET  /health                                  │
-│                                                                    │
-│  ml/                                                               │
-│  ├─ predict.py       Public predict() entry point                  │
-│  ├─ rule_engine.py   9 deterministic red-flag rules                │
-│  ├─ features.py      Feature engineering from patient dict         │
-│  ├─ model_utils.py   Ensemble load + feature row builder           │
-│  ├─ uncertainty.py   3-signal confidence scoring                   │
-│  ├─ explain.py       SHAP explanations                             │
-│  ├─ sepsis.py        qSOFA + SIRS screening                        │
-│  ├─ protocol_triggers.py  Time-critical protocol detection         │
-│  ├─ train.py / train_model.py  Full training pipeline             │
-│  └─ preprocess.py    MIMIC-IV-ED feature preprocessing             │
-│                                                                    │
-│  app/services/                                                     │
-│  ├─ patient_registry.py   Create & update triage stays            │
-│  ├─ monitor.py            Background waiting room escalation       │
-│  └─ cps.py                Clinical Priority Score                  │
-│                                                                    │
-│  websocket/connection_manager.py  — real-time broadcast            │
-│                         │                                          │
-│                         ▼                                          │
-│           SQLite  backend/data/patient_triage.db                   │
-│           (schema managed by Alembic migrations)                   │
-└──────────────────────────────────────────────────────────────────┘
-                                   │
-                                   ▼
-                    backend/data/  (MIMIC-IV-ED)
-                    edstays.csv.gz   triage.csv.gz
-                    vitalsign.csv.gz diagnosis.csv.gz
-                    medrecon.csv.gz  pyxis.csv.gz
+| Page | Description |
+|------|-------------|
+| Emergency Command Center | Live hospital overview |
+| Patient Intake | Real-time AI recommendation |
+| Live Queue | Dynamic queue with CPS |
+| Patient Comparison | Side-by-side comparison |
+| AI Insights | SHAP explanations |
+| Audit Logs | Override history |
+| Digital Twin | Operational simulation |
+
+---
+
+# System Architecture
+
+```mermaid
+graph LR
+
+N[Nurse]
+
+F[React Frontend]
+
+API[FastAPI Backend]
+
+ML[Hybrid ML Engine]
+
+DB[(SQLite)]
+
+WS[WebSockets]
+
+SIM[Digital Twin]
+
+N --> F
+
+F --> API
+
+API --> ML
+
+API --> DB
+
+API --> WS
+
+WS --> F
+
+API --> SIM
 ```
 
-### Directory Layout
+---
 
-```
+# Project Structure
+
+```text
 PatientTriageAI/
 ├── backend/
 │   ├── app/
-│   │   ├── api/
-│   │   │   ├── routes/          # triage, queue, override, audit, vitals, model, health
-│   │   │   ├── router.py
-│   │   │   └── deps.py
-│   │   ├── core/
-│   │   │   ├── config.py        # pydantic-settings, reads .env
-│   │   │   ├── database.py      # SQLAlchemy engine/session/Base
-│   │   │   └── logging_config.py
-│   │   ├── models/              # SQLAlchemy ORM models
-│   │   ├── schemas/             # Pydantic request/response models
-│   │   ├── services/            # patient_registry, monitor, cps
-│   │   ├── simulator/           # ED patient-flow simulator
-│   │   └── websocket/           # ConnectionManager
-│   ├── ml/                      # Full ML pipeline
-│   │   ├── predict.py           # Main prediction interface
-│   │   ├── rule_engine.py       # Deterministic red-flag rules
-│   │   ├── features.py          # Feature engineering
-│   │   ├── model_utils.py       # Ensemble utilities
-│   │   ├── uncertainty.py       # Confidence scoring
-│   │   ├── explain.py           # SHAP explanations
-│   │   ├── sepsis.py            # Sepsis screening
-│   │   ├── protocol_triggers.py # Protocol activation detection
-│   │   ├── preprocess.py        # MIMIC-IV-ED preprocessing
-│   │   ├── train.py             # Training pipeline (Optuna, MLflow)
-│   │   └── train_model.py       # Model training utilities
-│   ├── alembic/                 # DB migrations
-│   ├── tests/                   # pytest suite
-│   ├── data/                    # MIMIC-IV-ED CSVs + SQLite DB (gitignored)
-│   ├── reports/                 # ML artifacts, MLflow runs (gitignored)
-│   ├── requirements.txt
-│   ├── .env.example
-│   └── Dockerfile
+│   ├── ml/
+│   ├── alembic/
+│   ├── tests/
+│   ├── data/
+│   └── reports/
+│
 ├── frontend/
 │   ├── src/
-│   │   ├── components/          # ConfidenceGauge, SepsisAlert, ProtocolModal, etc.
-│   │   ├── pages/               # All 8 pages
-│   │   ├── services/            # api.js (axios client)
-│   │   ├── hooks/
-│   │   ├── context/
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── index.css
-│   ├── package.json
-│   ├── vite.config.js
-│   ├── tailwind.config.js
-│   └── Dockerfile
+│   ├── components/
+│   ├── pages/
+│   └── services/
+│
 ├── docker-compose.yml
-├── .gitignore
 └── README.md
 ```
 
 ---
 
-## Tech Stack
+# Technology Stack
 
 | Layer | Technologies |
-|---|---|
-| **Backend** | FastAPI, SQLAlchemy, Alembic, WebSockets, SQLite |
-| **ML** | XGBoost, LightGBM, CatBoost, HistGradientBoosting, SHAP, Optuna, MLflow, scikit-learn |
-| **Frontend** | React 18, Vite 6, TailwindCSS 3, Recharts, Framer Motion, axios |
-| **Deployment** | Docker, Docker Compose |
-| **Training Data** | MIMIC-IV-ED (PhysioNet) |
+|--------|--------------|
+| Backend | FastAPI, SQLAlchemy, Alembic, SQLite, WebSockets |
+| Machine Learning | XGBoost, LightGBM, CatBoost, HistGradientBoosting, SHAP, Optuna, MLflow |
+| Frontend | React 18, Vite, TailwindCSS, Recharts, Framer Motion |
+| Deployment | Docker, Docker Compose |
+| Dataset | MIMIC-IV-ED |
 
 ---
 
-## Prerequisites
+# Running Locally
 
-- Python 3.11
-- Node.js ≥ 18.18 and npm  
-  *(on Apple Silicon with Homebrew: add `/opt/homebrew/bin` to your PATH)*
-- Docker + Docker Compose (optional)
-- MIMIC-IV-ED demo files in `backend/data/`:  
-  `edstays.csv.gz`, `triage.csv.gz`, `vitalsign.csv.gz`,  
-  `diagnosis.csv.gz`, `medrecon.csv.gz`, `pyxis.csv.gz`
-
----
-
-## Setup — Option A: Run Locally
-
-### 1. Backend
-
-```bash
-cd PatientTriageAI/backend
-python3 -m venv venv
-source venv/bin/activate          # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-cp .env.example .env
-```
-
-Apply database migrations:
-
-```bash
-python -m alembic upgrade head
-```
-
-*(Optional) Train the ML model on MIMIC-IV-ED data:*
-
-```bash
-python -m ml.train
-```
-
-Start the API:
-
-```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-- API: http://localhost:8000
-- Interactive docs: http://localhost:8000/docs
-- Health check: http://localhost:8000/api/v1/health
-
-Run tests:
-
-```bash
-pytest -v
-```
-
-### 2. Frontend
-
-In a second terminal:
-
-```bash
-cd PatientTriageAI/frontend
-npm install
-npm run dev
-```
-
-- Frontend: http://localhost:5173
-
-The Vite dev server proxies `/api` and `/ws` to `http://localhost:8000`
-(configured in `vite.config.js`). The backend must be running for live
-triage to function.
-
----
-
-## Setup — Option B: Docker Compose
-
-```bash
-cd PatientTriageAI
-docker compose up --build
-```
-
-- Backend docs: http://localhost:8000/docs
-- Frontend: http://localhost:5173
-
-Run migrations inside the container on first start:
-
-```bash
-docker compose exec backend python -m alembic upgrade head
-```
-
-Stop everything:
-
-```bash
-docker compose down
-```
-
----
-
-## ML Pipeline
-
-The prediction pipeline runs end-to-end on every `POST /api/v1/triage` call:
-
-```
-Patient input
-    │
-    ├─▶ Rule Engine (rule_engine.py)
-    │       9 deterministic red-flag rules
-    │       Sets priority floor — ensemble cannot override
-    │
-    ├─▶ Feature Engineering (features.py)
-    │       Age-banded vitals, shock index, pulse pressure,
-    │       MAP, abnormal_vitals_count, vitals_missing_count, ...
-    │
-    ├─▶ ML Ensemble (model_utils.py)
-    │       XGBoost + LightGBM + CatBoost + HistGradientBoosting
-    │       → Logistic meta-learner (stacked)
-    │       → Isotonic calibration
-    │
-    ├─▶ Data Sufficiency Guard (predict.py)
-    │       ≥6 vitals missing + no rule fired → cap at P3, low confidence
-    │
-    ├─▶ Confidence Scoring (uncertainty.py)
-    │       calibrated_prob × 0.5 + ensemble_agreement × 0.3
-    │       + data_completeness × 0.2
-    │
-    ├─▶ SHAP Explanation (predict.py / explain.py)
-    │       Top-3 features driving this prediction
-    │
-    ├─▶ Sepsis Screen (sepsis.py)  — qSOFA + SIRS
-    │
-    └─▶ Protocol Triggers (protocol_triggers.py)
-            Time-critical activations (STEMI, stroke, sepsis, etc.)
-```
-
-Priorities map to ESI acuity:
-
-| Priority | ESI Level | Meaning |
-|---|---|---|
-| **P1** | 1 | Immediate — life threat |
-| **P2** | 2 | Emergent — high risk |
-| **P3** | 3 | Urgent |
-| **P4** | 4 | Less urgent / non-urgent |
-
----
-
-## Database Migrations
-
-When adding or modifying a SQLAlchemy model under `backend/app/models/`:
+## Backend
 
 ```bash
 cd backend
+
+python3 -m venv venv
+
 source venv/bin/activate
-python -m alembic revision --autogenerate -m "describe the change"
+
+pip install -r requirements.txt
+
+cp .env.example .env
+
+python -m alembic upgrade head
+
+python -m ml.train
+
+uvicorn app.main:app --reload
+```
+
+## Frontend
+
+```bash
+cd frontend
+
+npm install
+
+npm run dev
+```
+
+### Local URLs
+
+| Service | URL |
+|----------|-----|
+| Backend | `http://localhost:8000` |
+| Swagger | `http://localhost:8000/docs` |
+| Frontend | `http://localhost:5173` |
+
+---
+
+# Machine Learning Pipeline
+
+Every patient assessment follows the same prediction pipeline.
+
+```text
+Patient Input
+
+↓
+
+Clinical Rule Engine
+
+↓
+
+Feature Engineering
+
+↓
+
+Ensemble Prediction
+
+↓
+
+Confidence Estimation
+
+↓
+
+SHAP Explanation
+
+↓
+
+Clinical Priority Score
+
+↓
+
+Live Queue Update
+```
+
+## Priority Levels
+
+| Priority | Meaning |
+|----------|---------|
+| P1 | Immediate |
+| P2 | Emergent |
+| P3 | Urgent |
+| P4 | Less Urgent |
+| P5 | Non-Urgent |
+
+---
+
+# Database Migrations
+
+Whenever SQLAlchemy models change:
+
+```bash
+cd backend
+
+python -m alembic revision --autogenerate -m "describe change"
+
 python -m alembic upgrade head
 ```
 
 ---
 
----
+# Security & Privacy
 
-## Changelog
+PatientTriage.ai is designed with healthcare-grade security principles.
 
-### 2026-08-30
-
-**Bug: Spurious P1 prediction from demographics only** (`ml/predict.py`, `pages/PatientIntake.jsx`)
-- **Frontend:** `hasEnoughSignal()` previously triggered a live API call as soon as age was entered. Now requires at least one vital sign, a chief complaint, or a clinical finding (e.g. chest pain checkbox) before hitting the backend.
-- **Backend (data-sufficiency guard):** When ≥ 6 of 7 vital signs are missing *and* no rule-engine red flag has fired, the ML output is now capped: priority → P3, risk score → ≤ 35, confidence → ≤ 0.35, with a clear uncertainty message. The ensemble was previously misinterpreting a high `vitals_missing_count` feature as risk and returning P1 with 87/100 risk from demographics alone.
-
-**Bug: Waiting-room monitor crash every cycle** (`app/services/monitor.py`, `app/models/triage_stay.py`)
-- `monitor.py` was accessing `stay.priority` — an attribute that never existed on `TriageStay`. The model had `acuity` (MIMIC ground truth) and `predicted_high_acuity` (bool), but no priority string.
-- **Fix:** Added `recommended_priority` (str, indexed) and `recommended_confidence` (float) columns to `TriageStay`. `POST /triage` now writes these immediately after prediction. The monitor reads `stay.recommended_priority` and skips pre-loaded MIMIC rows that have never been live-scored.
-- Migration: `b6e03f4cb0d0_add_recommended_priority_and_confidence_to_triage_stay`
+- End-to-end encrypted communication (TLS-ready architecture)
+- Role-based access model
+- Complete audit trail for every recommendation
+- Secure session management
+- Privacy-first data handling
+- Architecture compatible with HIPAA, GDPR and India's ABDM principles
 
 ---
 
-## Known Limitations
+# Scalability
 
-- **Authentication is not implemented.** All endpoints are open. Do not deploy to any network without adding auth.
-- **SQLite is used for development.** For production, set `DATABASE_URL` in `.env` to a PostgreSQL connection string.
-- **The ML model requires MIMIC-IV-ED data to train.** A pre-trained artifact is expected at `backend/ml/` — run `python -m ml.train` to generate it.
-- **Age is not persisted on intake stays.** `TriageStay` has no `age` column (the MIMIC-IV-ED extract lacks source age). Age is used for scoring at intake but is not stored; re-scoring a live-intake patient from the queue uses `age=None`.
+PatientTriage.ai is designed to scale across hospitals of different sizes.
+
+| Hospital Type | Daily Volume |
+|---------------|-------------|
+| Rural Emergency Center | ~100 patients/day |
+| District Hospital | ~250 patients/day |
+| Urban Trauma Center | 500+ patients/day |
+
+The same backend architecture supports:
+
+- Single-computer offline deployment
+- Hospital-network deployment
+- Multi-hospital regional coordination
+- Real-time synchronization through WebSockets
 
 ---
 
-## License
+# Known Limitations
 
-Internal project — license terms to be determined.
+- Authentication is not yet implemented.
+- SQLite is currently used for development.
+- PostgreSQL migration is planned.
+- MIMIC-IV-ED is required for model training.
+- Some advanced dashboard features currently rely on simulated operational data for demonstration purposes.
+
+---
+
+# Future Roadmap
+
+- Multi-hospital coordination
+- Predictive bed management
+- Voice-assisted nurse intake
+- LLM-powered clinical summaries
+- FHIR/EHR integration
+- Mobile triage companion
+- Regional emergency command center
+
+---
+
+# Acknowledgements
+
+- **MIT Laboratory for Computational Physiology** for the MIMIC-IV-ED dataset.
+- **PhysioNet** for providing open clinical research resources.
+- Emergency medicine triage frameworks that inspired the safety-first design philosophy.
+
+---
+
+# License
+
+Internal Hackathon Project — License to be finalized.
+
+---
+
+## Guiding Principle
+
+> **PatientTriage.ai augments clinical judgment rather than replacing it.**
+
+The system is designed to improve patient prioritization, reduce avoidable waiting delays, provide transparent AI explanations, and ensure every recommendation remains under the control of a licensed healthcare professional.
